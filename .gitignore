@@ -41,3 +41,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase & Security - NEVER COMMIT THESE
+**/google-services.json
+**/GoogleService-Info.plist
+**/*-firebase-adminsdk-*.json
+**/*.keystore
+**/*.jks
+**/key.properties
+**/firebase_options.dart
+
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# API Keys and Secrets
+**/secrets.json
+**/config/keys.json
+**/config/secrets.json
+
+# Cloudinary credentials
+**/cloudinary_config.json
