@@ -58,14 +58,20 @@ cd shelf_it
 flutter pub get
 ```
 
-3. Configure Firebase
+3. **🔐 Configure Firebase (REQUIRED)**
+   - See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for detailed instructions
    - Add your `google-services.json` for Android
    - Add your `GoogleService-Info.plist` for iOS
+   - **⚠️ DO NOT commit these files to version control!**
 
 4. Run the application
 ```bash
 flutter run
 ```
+
+## 🔒 Security Notice
+
+This project requires Firebase configuration files that contain sensitive API keys. These files are **NOT** included in the repository for security reasons. Please follow the setup guide in [FIREBASE_SETUP.md](FIREBASE_SETUP.md) to configure your own Firebase project.
 
 ## Project Structure
 
