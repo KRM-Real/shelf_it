@@ -95,9 +95,9 @@ class _TransactionPageState extends State<TransactionPage> {
 
       await Printing.sharePdf(
           bytes: await pdf.save(), filename: 'transactions.pdf');
-      print("PDF exported successfully.");
+      // Debug: PDF exported successfully.
     } catch (e) {
-      print("Error exporting PDF: $e");
+      // Error exporting PDF: $e
     }
   }
 

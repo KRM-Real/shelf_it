@@ -31,8 +31,10 @@ class _OrderPageState extends State<OrderPage> {
   Future<void> _fetchUserMode() async {
     try {
       String userId = FirebaseAuth.instance.currentUser!.uid;
-      DocumentSnapshot userSnapshot =
-          await _firestore.collection('users').doc(userId).get();
+      DocumentSnapshot userSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .get();
 
       if (userSnapshot.exists) {
         setState(() {
@@ -64,7 +66,8 @@ class _OrderPageState extends State<OrderPage> {
     if (productName.isEmpty || quantity == null || quantity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Please enter a valid product name and quantity.')),
+          content: Text('Please enter a valid product name and quantity.'),
+        ),
       );
       return;
     }
@@ -75,8 +78,10 @@ class _OrderPageState extends State<OrderPage> {
           .where('name', isEqualTo: productName);
 
       if (_userMode == 'organization') {
-        productQuery =
-            productQuery.where('company_name', isEqualTo: _companyName);
+        productQuery = productQuery.where(
+          'company_name',
+          isEqualTo: _companyName,
+        );
       } else {
         productQuery = productQuery.where('userId', isEqualTo: _userId);
       }
@@ -92,8 +97,9 @@ class _OrderPageState extends State<OrderPage> {
 
         // Default values for missing fields
         int currentStock = productData['quantity'] ?? 0;
-        int currentSold =
-            productData.containsKey('sold') ? productData['sold'] : 0;
+        int currentSold = productData.containsKey('sold')
+            ? productData['sold']
+            : 0;
 
         if (_action == 'Restock') {
           // Update quantity and lastRestock timestamp
@@ -115,14 +121,18 @@ class _OrderPageState extends State<OrderPage> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content:
-                      Text('$quantity pcs of $productName sold successfully.')),
+                content: Text(
+                  '$quantity pcs of $productName sold successfully.',
+                ),
+              ),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(
-                      'Insufficient stock to sell $quantity pcs of $productName.')),
+                content: Text(
+                  'Insufficient stock to sell $quantity pcs of $productName.',
+                ),
+              ),
             );
             return;
           }
@@ -136,19 +146,22 @@ class _OrderPageState extends State<OrderPage> {
         _quantityController.clear();
         _noteController.clear();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Product not found.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Product not found.')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
     }
   }
 
   Future<void> _logTransaction(
-      String productName, int quantity, String action) async {
+    String productName,
+    int quantity,
+    String action,
+  ) async {
     try {
       // Query the product to fetch the price
       Query productQuery = _firestore
@@ -156,8 +169,10 @@ class _OrderPageState extends State<OrderPage> {
           .where('name', isEqualTo: productName);
 
       if (_userMode == 'organization') {
-        productQuery =
-            productQuery.where('company_name', isEqualTo: _companyName);
+        productQuery = productQuery.where(
+          'company_name',
+          isEqualTo: _companyName,
+        );
       } else {
         productQuery = productQuery.where('userId', isEqualTo: _userId);
       }
@@ -172,8 +187,8 @@ class _OrderPageState extends State<OrderPage> {
         double price = priceField is String
             ? double.tryParse(priceField) ?? 0.0
             : priceField is double
-                ? priceField
-                : 0.0;
+            ? priceField
+            : 0.0;
 
         // Log the transaction with the price
         await _firestore.collection('transactions').add({
@@ -209,9 +224,10 @@ class _OrderPageState extends State<OrderPage> {
         return StreamBuilder<QuerySnapshot>(
           stream: _firestore
               .collection('transactions')
-              .where(_userMode == 'organization' ? 'company_name' : 'userId',
-                  isEqualTo:
-                      _userMode == 'organization' ? _companyName : _userId)
+              .where(
+                _userMode == 'organization' ? 'company_name' : 'userId',
+                isEqualTo: _userMode == 'organization' ? _companyName : _userId,
+              )
               .orderBy('timestamp', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
@@ -261,16 +277,22 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Future<void> _deleteTransaction(String transactionId, String productName,
-      int quantity, String action) async {
+  Future<void> _deleteTransaction(
+    String transactionId,
+    String productName,
+    int quantity,
+    String action,
+  ) async {
     try {
       Query productQuery = _firestore
           .collection('Product')
           .where('name', isEqualTo: productName);
 
       if (_userMode == 'organization') {
-        productQuery =
-            productQuery.where('company_name', isEqualTo: _companyName);
+        productQuery = productQuery.where(
+          'company_name',
+          isEqualTo: _companyName,
+        );
       } else {
         productQuery = productQuery.where('userId', isEqualTo: _userId);
       }
@@ -419,8 +441,10 @@ class _OrderPageState extends State<OrderPage> {
                   }
                   return snapshot.docs
                       .map((doc) => doc['name'] as String)
-                      .where((name) =>
-                          name.toLowerCase().contains(filter.toLowerCase()))
+                      .where(
+                        (name) =>
+                            name.toLowerCase().contains(filter.toLowerCase()),
+                      )
                       .toList();
                 },
                 onChanged: (value) {
@@ -453,12 +477,14 @@ class _OrderPageState extends State<OrderPage> {
                   Expanded(
                     flex: 3,
                     child: DropdownButtonFormField<String>(
-                      value: _action,
+                      initialValue: _action,
                       items: ['Restock', 'Sold']
-                          .map((action) => DropdownMenuItem<String>(
-                                value: action,
-                                child: Text(action),
-                              ))
+                          .map(
+                            (action) => DropdownMenuItem<String>(
+                              value: action,
+                              child: Text(action),
+                            ),
+                          )
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -527,10 +553,14 @@ class _OrderPageState extends State<OrderPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory), label: "Products"),
+            icon: Icon(Icons.inventory),
+            label: "Products",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_outlined), label: "Stock Levels"),
+            icon: Icon(Icons.inventory_outlined),
+            label: "Stock Levels",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "Order"),
         ],
       ),

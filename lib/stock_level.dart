@@ -250,7 +250,7 @@ class StockLevelTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Shadow color
+            color: Colors.black.withValues(alpha: 0.1), // Shadow color
             spreadRadius: 2, // Spread of the shadow
             blurRadius: 5, // Blur intensity
             offset: const Offset(0, 3), // Offset of the shadow

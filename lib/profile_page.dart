@@ -114,14 +114,13 @@ class _ProfilePageState extends State<ProfilePage> {
           SnackBar(content: Text('Profile image uploaded successfully!')),
         );
       } else {
-        var responseData = await http.Response.fromStream(response);
-        print('Cloudinary Error: ${responseData.body}');
+        // Debug: Upload failed - could not get error details  
         scaffoldMessenger.showSnackBar(
           SnackBar(content: Text('Failed to upload image. Please try again.')),
         );
       }
     } catch (e) {
-      print('Exception: $e');
+      // Debug: Exception: $e
       scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
@@ -199,8 +198,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               _profileImageUrl!.isNotEmpty)
                           ? NetworkImage(_profileImageUrl!) as ImageProvider
                           : AssetImage('assets/default_profile.png'),
-                      onBackgroundImageError: (_, __) {
-                        print("Failed to load image");
+                      onBackgroundImageError: (exception, stackTrace) {
+                        // Debug: Failed to load image
                       },
                       child: (_profileImageUrl == null ||
                               _profileImageUrl!.isEmpty)
@@ -297,7 +296,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         height:
                             16), // Add space above the DropdownButtonFormField
                     DropdownButtonFormField<String>(
-                      value: _genderController.text.isEmpty
+                      initialValue: _genderController.text.isEmpty
                           ? null
                           : _genderController.text,
                       decoration: InputDecoration(

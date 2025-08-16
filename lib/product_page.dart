@@ -61,7 +61,7 @@ class _ProductPageState extends State<ProductPage> {
 
       if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
         String barcode = result.rawContent.trim(); // Normalize input
-        print('Scanned Barcode: $barcode'); // Debugging
+        // Debug: Scanned Barcode: $barcode
 
         // Create a base query
         Query query = FirebaseFirestore.instance
@@ -454,7 +454,7 @@ class ProductTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Shadow color
+            color: Colors.black.withValues(alpha: 0.1), // Shadow color
             spreadRadius: 2, // How much the shadow spreads
             blurRadius: 5, // The blur intensity
             offset: const Offset(0, 3), // Offset in x and y direction

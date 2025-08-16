@@ -178,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Colors.white.withValues(alpha: 0.1),
                       labelText: 'Email',
                       labelStyle: const TextStyle(color: Colors.white),
                       border: OutlineInputBorder(
@@ -205,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Colors.white.withValues(alpha: 0.1),
                       labelText: 'Password',
                       labelStyle: const TextStyle(color: Colors.white),
                       border: OutlineInputBorder(
@@ -248,7 +248,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Colors.white.withValues(alpha: 0.1),
                       labelText: 'Confirm Password',
                       labelStyle: const TextStyle(color: Colors.white),
                       border: OutlineInputBorder(
@@ -337,7 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.1),
+                        fillColor: Colors.white.withValues(alpha: 0.1),
                         labelText: 'Company Name',
                         labelStyle: const TextStyle(color: Colors.white),
                         border: OutlineInputBorder(

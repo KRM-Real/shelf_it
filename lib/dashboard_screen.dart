@@ -51,7 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               : null;
           _userId = userId;
         });
-        print('User mode: $_userMode'); // Debug print
+        // Debug: User mode: $_userMode
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           .get();
 
       if (transactions.docs.isEmpty) {
-        print("No Item Movement");
+        // Debug: No Item Movement
         return {
           'mostMovements': [],
           'leastMovements': [],
@@ -92,7 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       }
 
-      print("Aggregated Movements: $movementCounts");
+      // Debug: Aggregated Movements: $movementCounts
 
       final sortedEntries = movementCounts.entries.toList()
         ..sort((a, b) => b.value.compareTo(a.value));
@@ -116,7 +116,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'leastMovements': top3Least,
       };
     } catch (e) {
-      print("Error fetching Movement: $e");
+      // Error fetching Movement: $e
       return {
         'mostMovements': [],
         'leastMovements': [],

@@ -100,7 +100,7 @@ class companydetailsPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
+                              color: Colors.grey.withValues(alpha: 0.5),
                               spreadRadius: 2,
                               blurRadius: 6,
                               offset: Offset(0, 3),
