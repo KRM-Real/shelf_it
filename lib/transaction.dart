@@ -34,23 +34,36 @@ class _TransactionPageState extends State<TransactionPage> {
         .orderBy('timestamp', descending: true);
 
     if (_startDate != null && _endDate != null) {
-      final adjustedEndDate =
-          DateTime(_endDate!.year, _endDate!.month, _endDate!.day, 23, 59, 59);
+      final adjustedEndDate = DateTime(
+        _endDate!.year,
+        _endDate!.month,
+        _endDate!.day,
+        23,
+        59,
+        59,
+      );
       query = query
-          .where('timestamp',
-              isGreaterThanOrEqualTo: Timestamp.fromDate(_startDate!))
-          .where('timestamp',
-              isLessThanOrEqualTo: Timestamp.fromDate(adjustedEndDate));
+          .where(
+            'timestamp',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(_startDate!),
+          )
+          .where(
+            'timestamp',
+            isLessThanOrEqualTo: Timestamp.fromDate(adjustedEndDate),
+          );
     }
 
-    return query.snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => TransactionModel.fromDocument(doc))
-        .toList());
+    return query.snapshots().map(
+      (snapshot) => snapshot.docs
+          .map((doc) => TransactionModel.fromDocument(doc))
+          .toList(),
+    );
   }
 
   // Export transactions to PDF
   Future<void> exportTransactionsToPDF(
-      List<TransactionModel> transactions) async {
+    List<TransactionModel> transactions,
+  ) async {
     try {
       final pdf = pw.Document();
       final font = pw.Font.times();
@@ -62,8 +75,10 @@ class _TransactionPageState extends State<TransactionPage> {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text('Transactions',
-                    style: pw.TextStyle(font: font, fontSize: 24)),
+                pw.Text(
+                  'Transactions',
+                  style: pw.TextStyle(font: font, fontSize: 24),
+                ),
                 pw.SizedBox(height: 20),
                 pw.Table.fromTextArray(
                   headers: [
@@ -71,7 +86,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     'Quantity',
                     'Price',
                     'Date',
-                    'Action'
+                    'Action',
                   ],
                   data: transactions.map((transaction) {
                     return [
@@ -94,7 +109,9 @@ class _TransactionPageState extends State<TransactionPage> {
       await file.writeAsBytes(await pdf.save());
 
       await Printing.sharePdf(
-          bytes: await pdf.save(), filename: 'transactions.pdf');
+        bytes: await pdf.save(),
+        filename: 'transactions.pdf',
+      );
       // Debug: PDF exported successfully.
     } catch (e) {
       // Error exporting PDF: $e
@@ -158,7 +175,8 @@ class _TransactionPageState extends State<TransactionPage> {
 
           return Container(
             color: Color(
-                0xFFE6F2F0), // Set background color as per your requirement
+              0xFFE6F2F0,
+            ), // Set background color as per your requirement
             child: Stack(
               children: [
                 Column(
@@ -171,14 +189,17 @@ class _TransactionPageState extends State<TransactionPage> {
                           return Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  10.0), // Rounded corners
+                                10.0,
+                              ), // Rounded corners
                             ),
                             margin: EdgeInsets.symmetric(
-                                vertical: 10.0,
-                                horizontal: 15.0), // Card margin
+                              vertical: 10.0,
+                              horizontal: 15.0,
+                            ), // Card margin
                             child: Padding(
                               padding: const EdgeInsets.all(
-                                  10.0), // Padding inside the card
+                                10.0,
+                              ), // Padding inside the card
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -196,10 +217,12 @@ class _TransactionPageState extends State<TransactionPage> {
                                         ),
                                         SizedBox(height: 5),
                                         Text(
-                                            "Quantity: ${transaction.quantity}"),
+                                          "Quantity: ${transaction.quantity}",
+                                        ),
                                         Text("Action: ${transaction.action}"),
                                         Text(
-                                            "Date: ${transaction.dateFormatted}"),
+                                          "Date: ${transaction.dateFormatted}",
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -239,7 +262,9 @@ class _TransactionPageState extends State<TransactionPage> {
                         backgroundColor: Colors.black, // Black button
                         foregroundColor: Colors.white, // White text
                         padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 20),
+                          vertical: 15,
+                          horizontal: 20,
+                        ),
                       ),
                       child: const Text("Export to PDF"),
                     ),

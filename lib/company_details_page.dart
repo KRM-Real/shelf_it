@@ -119,9 +119,7 @@ class companydetailsPage extends StatelessWidget {
                           ),
                           title: Text(
                             name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: role != null ? Text(role) : null,
                         ),

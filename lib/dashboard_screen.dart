@@ -54,14 +54,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // Debug: User mode: $_userMode
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching user data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching user data: $e')));
     }
   }
 
   Future<Map<String, List<Map<String, dynamic>>>>
-      _fetchUserSpecificMovementAnalytics() async {
+  _fetchUserSpecificMovementAnalytics() async {
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -73,10 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       if (transactions.docs.isEmpty) {
         // Debug: No Item Movement
-        return {
-          'mostMovements': [],
-          'leastMovements': [],
-        };
+        return {'mostMovements': [], 'leastMovements': []};
       }
 
       Map<String, int> movementCounts = {};
@@ -98,29 +95,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ..sort((a, b) => b.value.compareTo(a.value));
 
       final top3Most = sortedEntries.take(3).map((entry) {
-        return {
-          'product': entry.key,
-          'movementCount': entry.value,
-        };
+        return {'product': entry.key, 'movementCount': entry.value};
       }).toList();
 
       final top3Least = sortedEntries.reversed.take(3).map((entry) {
-        return {
-          'product': entry.key,
-          'movementCount': entry.value,
-        };
+        return {'product': entry.key, 'movementCount': entry.value};
       }).toList();
 
-      return {
-        'mostMovements': top3Most,
-        'leastMovements': top3Least,
-      };
+      return {'mostMovements': top3Most, 'leastMovements': top3Least};
     } catch (e) {
       // Error fetching Movement: $e
-      return {
-        'mostMovements': [],
-        'leastMovements': [],
-      };
+      return {'mostMovements': [], 'leastMovements': []};
     }
   }
 
@@ -172,10 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 4),
-              Text(
-                email,
-                style: const TextStyle(color: Colors.white70),
-              ),
+              Text(email, style: const TextStyle(color: Colors.white70)),
             ],
           ),
         );
@@ -249,12 +231,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final product = querySnapshot.docs.first.data() as Map<String, dynamic>;
         _showProductDetails(product);
       } else {
-        _showDialog("Product Not Found",
-            "No product matches the scanned barcode or access denied.");
+        _showDialog(
+          "Product Not Found",
+          "No product matches the scanned barcode or access denied.",
+        );
       }
     } catch (e) {
       _showDialog(
-          "Error", "An error occurred while searching for the product: $e");
+        "Error",
+        "An error occurred while searching for the product: $e",
+      );
     }
   }
 
@@ -328,11 +314,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 // Display the product details with bolded labels
                 _buildDetailRow("Name", product['name'] ?? 'N/A'),
                 _buildDetailRow(
-                    "Quantity", product['quantity']?.toString() ?? 'N/A'),
+                  "Quantity",
+                  product['quantity']?.toString() ?? 'N/A',
+                ),
                 _buildDetailRow("Price", "\$${product['price'] ?? 'N/A'}"),
                 _buildDetailRow("Description", product['description'] ?? 'N/A'),
                 _buildDetailRow(
-                    "Threshold", product['threshold']?.toString() ?? 'N/A'),
+                  "Threshold",
+                  product['threshold']?.toString() ?? 'N/A',
+                ),
                 _buildDetailRow(
                   "Added At",
                   product['addedAt'] != null
@@ -369,10 +359,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             TextSpan(
               text: value,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-              ),
+              style: const TextStyle(color: Colors.black, fontSize: 14),
             ),
           ],
         ),
@@ -548,9 +535,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Card(
       color: const Color(0xFF80ED99),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -588,19 +573,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const Text(
                       "Inventory Summary",
                       style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text("Items: $totalItems",
-                    style: const TextStyle(color: Colors.black)),
-                Text("Total Quantity: $totalQuantity",
-                    style: const TextStyle(color: Colors.black)),
-                Text("Total Value: \$${totalPrice.toStringAsFixed(2)}",
-                    style: const TextStyle(color: Colors.black)),
+                Text(
+                  "Items: $totalItems",
+                  style: const TextStyle(color: Colors.black),
+                ),
+                Text(
+                  "Total Quantity: $totalQuantity",
+                  style: const TextStyle(color: Colors.black),
+                ),
+                Text(
+                  "Total Value: \$${totalPrice.toStringAsFixed(2)}",
+                  style: const TextStyle(color: Colors.black),
+                ),
               ],
             );
           },
@@ -649,10 +641,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             return ListTile(
               contentPadding: const EdgeInsets.all(0),
-              title: Text(
-                name,
-                style: const TextStyle(color: Colors.white),
-              ),
+              title: Text(name, style: const TextStyle(color: Colors.white)),
               subtitle: Text(
                 'Quantity: $quantity',
                 style: const TextStyle(color: Colors.white70),
@@ -665,12 +654,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget buildDashboardCard(
-      IconData icon, String title, String description, Color color) {
+    IconData icon,
+    String title,
+    String description,
+    Color color,
+  ) {
     return Card(
       color: color,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -691,10 +682,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: Text(
                 description,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
+                style: const TextStyle(fontSize: 14, color: Colors.black),
                 maxLines: 3, // Limits the text to 3 lines
                 overflow:
                     TextOverflow.ellipsis, // Adds "..." if text is too long
@@ -709,9 +697,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildLowStockCard() {
     return Card(
       color: const Color.fromARGB(255, 244, 78, 81),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -723,13 +709,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text(
               "Low Stock",
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             SizedBox(height: 8),
-            Text("View Products that are low stock",
-                style: TextStyle(color: Colors.black)),
+            Text(
+              "View Products that are low stock",
+              style: TextStyle(color: Colors.black),
+            ),
           ],
         ),
       ),
@@ -851,8 +840,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 return SizedBox(
                   height: 50, // Constrain the size of the no-data message
                   child: const Center(
-                    child: Text("No item flow data found.,",
-                        style: TextStyle(color: Colors.grey)),
+                    child: Text(
+                      "No item flow data found.,",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                 );
               }
@@ -896,8 +887,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               color: (action == 'Restock')
                                   ? Colors.green
                                   : (action == 'Sold')
-                                      ? Colors.red
-                                      : Colors.grey,
+                                  ? Colors.red
+                                  : Colors.grey,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -971,9 +962,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                         int quantity =
                             int.tryParse(data['quantity']?.toString() ?? '0') ??
-                                0;
-                        int threshold = int.tryParse(
-                                data['threshold']?.toString() ?? '0') ??
+                            0;
+                        int threshold =
+                            int.tryParse(
+                              data['threshold']?.toString() ?? '0',
+                            ) ??
                             0;
 
                         bool isLowStock = quantity <= threshold;
@@ -992,13 +985,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       if (lowStockCount == 0) {
                         return const Center(
-                            child: Text('No low-stock items currently.',
-                                style: TextStyle(color: Colors.grey)));
+                          child: Text(
+                            'No low-stock items currently.',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
                       }
 
                       // Display the first 5 low-stock products
-                      var topLowStockProducts =
-                          lowStockProducts.take(5).toList();
+                      var topLowStockProducts = lowStockProducts
+                          .take(5)
+                          .toList();
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1006,7 +1003,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             'Low Stock Products: $lowStockCount',
                             style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold),
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           SizedBox(height: 10.0),
                           ListView.builder(
@@ -1019,15 +1018,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                               String name =
                                   data != null && data.containsKey('name')
-                                      ? data['name']
-                                      : 'Unknown Item';
-                              int quantity = data != null &&
-                                      data.containsKey('quantity')
+                                  ? data['name']
+                                  : 'Unknown Item';
+                              int quantity =
+                                  data != null && data.containsKey('quantity')
                                   ? int.tryParse(data['quantity'].toString()) ??
-                                      0
+                                        0
                                   : 0;
-                              int? threshold = data != null &&
-                                      data.containsKey('threshold')
+                              int? threshold =
+                                  data != null && data.containsKey('threshold')
                                   ? int.tryParse(data['threshold'].toString())
                                   : null;
 
@@ -1036,10 +1035,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 subtitle: Text(
                                   'Stock: $quantity | Threshold: ${threshold ?? 'Not Set'}',
                                 ),
-                                leading: Icon(
-                                  Icons.warning,
-                                  color: Colors.red,
-                                ),
+                                leading: Icon(Icons.warning, color: Colors.red),
                               );
                             },
                           ),
@@ -1064,8 +1060,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void showAnalytics(String title, List<Map<String, dynamic>> mostMovements,
-      List<Map<String, dynamic>> leastMovements) {
+  void showAnalytics(
+    String title,
+    List<Map<String, dynamic>> mostMovements,
+    List<Map<String, dynamic>> leastMovements,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -1079,9 +1078,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ? const Center(
                     child: Text(
                       "No Product Movements",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(color: Colors.grey),
                     ),
                   )
                 : Column(
@@ -1092,17 +1089,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         "Top 3 Products with Most Movements:",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      ...mostMovements.map((product) => Text(
-                            "${product['product']}: ${product['movementCount']} movements",
-                          )),
+                      ...mostMovements.map(
+                        (product) => Text(
+                          "${product['product']}: ${product['movementCount']} movements",
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       const Text(
                         "Top 3 Products with Least Movements:",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      ...leastMovements.map((product) => Text(
-                            "${product['product']}: ${product['movementCount']} movements",
-                          )),
+                      ...leastMovements.map(
+                        (product) => Text(
+                          "${product['product']}: ${product['movementCount']} movements",
+                        ),
+                      ),
                     ],
                   ),
           ),
@@ -1157,10 +1158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Row(
             children: [
@@ -1172,8 +1170,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Text(
                     facebook,
                     style: const TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline),
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
               ),
@@ -1190,8 +1189,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Text(
                     instagram,
                     style: const TextStyle(
-                        color: Colors.pink,
-                        decoration: TextDecoration.underline),
+                      color: Colors.pink,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
               ),
@@ -1255,7 +1255,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: const Color(0xFF213A57), // Background color
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 16),
+                      vertical: 15,
+                      horizontal: 16,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1270,15 +1272,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           profileName,
                           style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           email,
                           style: const TextStyle(
-                              color: Colors.white70, fontSize: 14),
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -1320,14 +1325,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => companydetailsPage(
-                                      companyName: _companyName!),
+                                    companyName: _companyName!,
+                                  ),
                                 ),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content:
-                                        Text('Company name not available')),
+                                  content: Text('Company name not available'),
+                                ),
                               );
                             }
                           },
@@ -1422,12 +1428,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                        "For general inquiries, Contact us at:"),
+                                      "For general inquiries, Contact us at:",
+                                    ),
                                     const Text(
                                       "Team Members",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                     const SizedBox(height: 2),
                                     _buildContactInfo(
@@ -1509,14 +1517,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.inventory), label: 'Products'),
+                icon: Icon(Icons.inventory),
+                label: 'Products',
+              ),
               BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.inventory_outlined), label: 'Stock Levels'),
+                icon: Icon(Icons.inventory_outlined),
+                label: 'Stock Levels',
+              ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.assignment), label: 'Order'),
+                icon: Icon(Icons.assignment),
+                label: 'Order',
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

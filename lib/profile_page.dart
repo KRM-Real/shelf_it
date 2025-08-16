@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -46,8 +47,10 @@ class _ProfilePageState extends State<ProfilePage> {
   // Load existing user data from Firestore
   void _loadUserData() async {
     if (_currentUser != null) {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(_currentUser.uid).get();
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(_currentUser.uid)
+          .get();
 
       if (userDoc.exists) {
         Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
@@ -77,10 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
         'profileImage': _profileImageUrl, // Save profile image URL
       };
 
-      await _firestore.collection('users').doc(_currentUser.uid).set(
-            updatedData,
-            SetOptions(merge: true),
-          );
+      await _firestore
+          .collection('users')
+          .doc(_currentUser.uid)
+          .set(updatedData, SetOptions(merge: true));
 
       scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Profile updated successfully!')),
@@ -92,12 +95,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _uploadToCloudinary(File imageFile) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(cloudinaryUrl),
+      var request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl));
+      request.files.add(
+        await http.MultipartFile.fromPath('file', imageFile.path),
       );
-      request.files
-          .add(await http.MultipartFile.fromPath('file', imageFile.path));
       request.fields['upload_preset'] = cloudinaryPreset;
 
       var response = await request.send();
@@ -114,24 +115,23 @@ class _ProfilePageState extends State<ProfilePage> {
           SnackBar(content: Text('Profile image uploaded successfully!')),
         );
       } else {
-        // Debug: Upload failed - could not get error details  
+        // Debug: Upload failed - could not get error details
         scaffoldMessenger.showSnackBar(
           SnackBar(content: Text('Failed to upload image. Please try again.')),
         );
       }
     } catch (e) {
       // Debug: Exception: $e
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   // Select a profile picture
   Future<void> _selectProfilePicture() async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -194,18 +194,26 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: (_profileImageUrl != null &&
-                              _profileImageUrl!.isNotEmpty)
-                          ? NetworkImage(_profileImageUrl!) as ImageProvider
-                          : AssetImage('assets/default_profile.png'),
-                      onBackgroundImageError: (exception, stackTrace) {
-                        // Debug: Failed to load image
-                      },
-                      child: (_profileImageUrl == null ||
-                              _profileImageUrl!.isEmpty)
-                          ? const Icon(Icons.account_circle,
-                              size: 50, color: Colors.grey)
-                          : null,
+                      backgroundColor: Colors.grey[300],
+                      child: (_profileImageUrl != null && _profileImageUrl!.isNotEmpty)
+                          ? CachedNetworkImage(
+                              imageUrl: _profileImageUrl!,
+                              imageBuilder: (context, imageProvider) => CircleAvatar(
+                                radius: 50,
+                                backgroundImage: imageProvider,
+                              ),
+                              placeholder: (context, url) => const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.account_circle,
+                                size: 100,
+                                color: Colors.grey,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.account_circle,
+                              size: 100,
+                              color: Colors.grey,
+                            ),
                     ),
                     Positioned(
                       bottom: 0,
@@ -235,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Divider(),
-// Name Text Field
+              // Name Text Field
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: Column(
@@ -293,8 +301,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     SizedBox(
-                        height:
-                            16), // Add space above the DropdownButtonFormField
+                      height: 16,
+                    ), // Add space above the DropdownButtonFormField
                     DropdownButtonFormField<String>(
                       initialValue: _genderController.text.isEmpty
                           ? null
@@ -373,9 +381,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.black, // foreground color
                 ),
-                child: Text('Save',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                child: Text(
+                  'Save',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
               ),
             ],
           ),

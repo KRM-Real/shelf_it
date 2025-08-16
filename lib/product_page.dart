@@ -49,9 +49,9 @@ class _ProductPageState extends State<ProductPage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching user data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching user data: $e')));
     }
   }
 
@@ -88,9 +88,9 @@ class _ProductPageState extends State<ProductPage> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error scanning QR Code: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error scanning QR Code: $e')));
     }
   }
 
@@ -224,7 +224,8 @@ class _ProductPageState extends State<ProductPage> {
                           return AlertDialog(
                             title: const Text('Confirm Removal'),
                             content: const Text(
-                                'Are you sure you want to remove this product?'),
+                              'Are you sure you want to remove this product?',
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () =>
@@ -233,12 +234,15 @@ class _ProductPageState extends State<ProductPage> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close confirmation dialog
-                                  Navigator.of(context)
-                                      .pop(); // Close product dialog
+                                  Navigator.of(
+                                    context,
+                                  ).pop(); // Close confirmation dialog
+                                  Navigator.of(
+                                    context,
+                                  ).pop(); // Close product dialog
                                   _deleteProduct(
-                                      product.id); // Remove the product
+                                    product.id,
+                                  ); // Remove the product
                                 },
                                 child: const Text(
                                   'Remove',
@@ -252,10 +256,7 @@ class _ProductPageState extends State<ProductPage> {
                     },
                     child: const Text(
                       'Remove',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: 16.0, color: Colors.white),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -285,8 +286,9 @@ class _ProductPageState extends State<ProductPage> {
                       style: TextStyle(fontSize: 16.0, color: Colors.white),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(0xFF0B6477), // Consistent theme
+                      backgroundColor: const Color(
+                        0xFF0B6477,
+                      ), // Consistent theme
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -301,7 +303,7 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-// Helper style for field titles
+  // Helper style for field titles
   TextStyle _dialogFieldTitleStyle = const TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 14.0,
@@ -317,9 +319,9 @@ class _ProductPageState extends State<ProductPage> {
         const SnackBar(content: Text('Product removed successfully')),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error removing product: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error removing product: $e')));
     }
   }
 
@@ -382,7 +384,8 @@ class _ProductPageState extends State<ProductPage> {
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return const Center(
-                            child: Text('No products available.'));
+                          child: Text('No products available.'),
+                        );
                       }
 
                       var products = snapshot.data!.docs;
@@ -397,7 +400,8 @@ class _ProductPageState extends State<ProductPage> {
                               name: product['name'] ?? 'No Name',
                               description:
                                   product['description'] ?? 'No Description',
-                              imageUrl: product['imageUrl'] ??
+                              imageUrl:
+                                  product['imageUrl'] ??
                                   'https://via.placeholder.com/150',
                               price: product['price'].toString(),
                               quantity: product['quantity'].toString(),
@@ -419,10 +423,14 @@ class _ProductPageState extends State<ProductPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory), label: "Products"),
+            icon: Icon(Icons.inventory),
+            label: "Products",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_outlined), label: "Stock Levels"),
+            icon: Icon(Icons.inventory_outlined),
+            label: "Stock Levels",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "Order"),
         ],
       ),
@@ -496,22 +504,16 @@ class ProductTile extends StatelessWidget {
                   const SizedBox(height: 8.0),
                   Text(
                     description,
-                    style: const TextStyle(
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(color: Colors.black54),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
                     'Price: \$${price}',
-                    style: const TextStyle(
-                      color: Colors.green,
-                    ),
+                    style: const TextStyle(color: Colors.green),
                   ),
                   Text(
                     'Quantity: $quantity',
-                    style: const TextStyle(
-                      color: Colors.red,
-                    ),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ],
               ),
@@ -567,8 +569,9 @@ class _EditProductPageState extends State<EditProductPage> {
                 title: const Text('Gallery'),
                 onTap: () async {
                   Navigator.of(context).pop(); // Close the modal
-                  final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
+                  final pickedFile = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
 
                   if (pickedFile != null) {
                     setState(() {
@@ -591,8 +594,9 @@ class _EditProductPageState extends State<EditProductPage> {
                 title: const Text('Camera'),
                 onTap: () async {
                   Navigator.of(context).pop(); // Close the modal
-                  final pickedFile =
-                      await picker.pickImage(source: ImageSource.camera);
+                  final pickedFile = await picker.pickImage(
+                    source: ImageSource.camera,
+                  );
 
                   if (pickedFile != null) {
                     setState(() {
@@ -620,8 +624,9 @@ class _EditProductPageState extends State<EditProductPage> {
   Future<String?> _uploadImageToCloudinary(File image) async {
     final cloudName = 'dmkfftvi9'; // Replace with your Cloud Name
     final uploadPreset = 'ml_default'; // Replace with your Upload Preset
-    final url =
-        Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+    final url = Uri.parse(
+      'https://api.cloudinary.com/v1_1/$cloudName/image/upload',
+    );
 
     try {
       final request = http.MultipartRequest('POST', url)
@@ -633,8 +638,7 @@ class _EditProductPageState extends State<EditProductPage> {
       if (response.statusCode == 200) {
         final responseData = await http.Response.fromStream(response);
         final data = jsonDecode(responseData.body);
-        return data[
-            'secure_url']; // Return the secure URL of the uploaded image
+        return data['secure_url']; // Return the secure URL of the uploaded image
       } else {
         throw Exception('Failed to upload image to Cloudinary');
       }
@@ -659,23 +663,23 @@ class _EditProductPageState extends State<EditProductPage> {
             .collection('Product')
             .doc(widget.product['id'])
             .update({
-          'name': name,
-          'description': description,
-          'price': double.parse(price),
-          'quantity': int.parse(quantity),
-          'imageUrl':
-              newImageUrl ?? imageUrl, // Use existing URL if no new image
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+              'name': name,
+              'description': description,
+              'price': double.parse(price),
+              'quantity': int.parse(quantity),
+              'imageUrl':
+                  newImageUrl ?? imageUrl, // Use existing URL if no new image
+              'updatedAt': FieldValue.serverTimestamp(),
+            });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Product updated successfully')),
         );
         Navigator.of(context).pop();
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating product: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error updating product: $e')));
       }
     }
   }
@@ -684,8 +688,10 @@ class _EditProductPageState extends State<EditProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('Edit Product', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Edit Product',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF213A57),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -714,22 +720,22 @@ class _EditProductPageState extends State<EditProductPage> {
                         ],
                       )
                     : _newImage != null
-                        ? Image.file(
-                            _newImage!,
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          )
-                        : imageUrl != null
-                            ? Image.network(
-                                imageUrl!,
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.broken_image, size: 80),
-                              )
-                            : const Icon(Icons.broken_image, size: 80),
+                    ? Image.file(
+                        _newImage!,
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.cover,
+                      )
+                    : imageUrl != null
+                    ? Image.network(
+                        imageUrl!,
+                        height: 150,
+                        width: 150,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.broken_image, size: 80),
+                      )
+                    : const Icon(Icons.broken_image, size: 80),
               ),
               const SizedBox(height: 10),
               Center(
@@ -760,8 +766,8 @@ class _EditProductPageState extends State<EditProductPage> {
                 onSaved: (value) => price = value!,
                 validator: (value) =>
                     value!.isEmpty || double.tryParse(value) == null
-                        ? 'Enter a valid price'
-                        : null,
+                    ? 'Enter a valid price'
+                    : null,
               ),
               _buildInputBox(
                 label: "Quantity",
@@ -770,16 +776,17 @@ class _EditProductPageState extends State<EditProductPage> {
                 onSaved: (value) => quantity = value!,
                 validator: (value) =>
                     value!.isEmpty || int.tryParse(value) == null
-                        ? 'Enter a valid quantity'
-                        : null,
+                    ? 'Enter a valid quantity'
+                    : null,
               ),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   onPressed: _updateProduct,
-                  child: const Text('Save Changes',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  child: const Text(
+                    'Save Changes',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
               ),
             ],

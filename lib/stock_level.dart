@@ -19,7 +19,7 @@ class _StockLevelPageState extends State<StockLevelPage> {
   List<String> sortOptions = [
     'Name',
     'Stock Level (Ascending)',
-    'Stock Level (Descending)'
+    'Stock Level (Descending)',
   ];
 
   @override
@@ -49,9 +49,9 @@ class _StockLevelPageState extends State<StockLevelPage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching user data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error fetching user data: $e')));
     }
   }
 
@@ -156,9 +156,9 @@ class _StockLevelPageState extends State<StockLevelPage> {
                   }
 
                   if (snapshot.hasError) {
-                    if (snapshot.error
-                        .toString()
-                        .contains('failed-precondition')) {
+                    if (snapshot.error.toString().contains(
+                      'failed-precondition',
+                    )) {
                       return Center(
                         child: Text(
                           'Query requires a Firestore index. Please set up the index in Firebase Console.',
@@ -168,7 +168,8 @@ class _StockLevelPageState extends State<StockLevelPage> {
                       );
                     }
                     return Center(
-                        child: Text('An error occurred: ${snapshot.error}'));
+                      child: Text('An error occurred: ${snapshot.error}'),
+                    );
                   }
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -188,12 +189,12 @@ class _StockLevelPageState extends State<StockLevelPage> {
                           : 'No Name';
                       int quantity =
                           data != null && data.containsKey('quantity')
-                              ? int.tryParse(data['quantity'].toString()) ?? 0
-                              : 0;
+                          ? int.tryParse(data['quantity'].toString()) ?? 0
+                          : 0;
                       int? threshold =
                           data != null && data.containsKey('threshold')
-                              ? int.tryParse(data['threshold'].toString())
-                              : null;
+                          ? int.tryParse(data['threshold'].toString())
+                          : null;
 
                       return StockLevelTile(
                         name: name,
@@ -217,10 +218,14 @@ class _StockLevelPageState extends State<StockLevelPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory), label: "Products"),
+            icon: Icon(Icons.inventory),
+            label: "Products",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_outlined), label: "Stock Levels"),
+            icon: Icon(Icons.inventory_outlined),
+            label: "Stock Levels",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.assignment), label: "Order"),
         ],
       ),
@@ -292,17 +297,14 @@ class StockLevelTile extends StatelessWidget {
                   ),
                   Text(
                     'Threshold: ${threshold ?? 'Not Set'}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   TextButton(
                     onPressed: () async {
                       int? newThreshold = await showDialog<int>(
                         context: context,
-                        builder: (context) => ThresholdDialog(
-                          currentThreshold: threshold,
-                        ),
+                        builder: (context) =>
+                            ThresholdDialog(currentThreshold: threshold),
                       );
                       if (newThreshold != null) {
                         try {
@@ -310,13 +312,16 @@ class StockLevelTile extends StatelessWidget {
                           onSetThreshold(newThreshold);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content:
-                                    Text('Threshold updated to $newThreshold')),
+                              content: Text(
+                                'Threshold updated to $newThreshold',
+                              ),
+                            ),
                           );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Error updating threshold: $e')),
+                              content: Text('Error updating threshold: $e'),
+                            ),
                           );
                         }
                       }

@@ -58,11 +58,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
 
         // Proceed with creating the user and storing their details in Firestore
-        UserCredential userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
+            );
 
         String uid = userCredential.user!.uid;
 
@@ -84,9 +84,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         // Success message and navigation
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign up successful!')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Sign up successful!')));
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -128,9 +128,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _showErrorMessage(String message) {
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -232,8 +232,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return 'Please enter your password';
                       } else if (value.length < 6) {
                         return 'Password must be at least 6 characters';
-                      } else if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$')
-                          .hasMatch(value)) {
+                      } else if (!RegExp(
+                        r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$',
+                      ).hasMatch(value)) {
                         return 'Password must include both letters and numbers';
                       }
                       return null;
@@ -344,8 +345,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
                         ),
-                        prefixIcon:
-                            const Icon(Icons.business, color: Colors.white),
+                        prefixIcon: const Icon(
+                          Icons.business,
+                          color: Colors.white,
+                        ),
                       ),
                       validator: (value) {
                         if (_isOrganization &&
@@ -366,7 +369,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
+                        horizontal: 50,
+                        vertical: 15,
+                      ),
                     ),
                     child: const Text(
                       'Sign Up',
@@ -381,7 +386,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
+                          builder: (context) => const LoginScreen(),
+                        ),
                       );
                     },
                     child: const Text(

@@ -21,8 +21,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
   Future<void> fetchTransactionData() async {
     try {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('transactions').get();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('transactions')
+          .get();
 
       // Aggregate data by product
       final Map<String, Map<String, dynamic>> productMovements = {};
@@ -44,8 +45,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
       setState(() {
         productData = productMovements.values.toList();
-        productData.sort((a, b) =>
-            b['movements'].compareTo(a['movements'])); // Sort descending
+        productData.sort(
+          (a, b) => b['movements'].compareTo(a['movements']),
+        ); // Sort descending
         isLoading = false;
       });
     } catch (e) {
@@ -63,29 +65,32 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         .asMap()
         .entries
         .map((entry) {
-      final index = entry.key;
-      final product = entry.value;
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            toY: product['movements'].toDouble(),
-            color: Colors.green, // Bar color
-            width: 18,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ],
-        showingTooltipIndicators: [0],
-      );
-    }).toList();
+          final index = entry.key;
+          final product = entry.value;
+          return BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                toY: product['movements'].toDouble(),
+                color: Colors.green, // Bar color
+                width: 18,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ],
+            showingTooltipIndicators: [0],
+          );
+        })
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('Inventory Analytics', style: TextStyle(color: Colors.white)),
+        title: Text(
+          'Inventory Analytics',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xFF213A57),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -100,11 +105,13 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 // Graph Section
                 Container(
                   padding: const EdgeInsets.all(
-                      16), // Padding to avoid touching corners
+                    16,
+                  ), // Padding to avoid touching corners
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: Colors.grey,
-                        width: 1), // Border around the graph
+                      color: Colors.grey,
+                      width: 1,
+                    ), // Border around the graph
                     borderRadius: BorderRadius.circular(8), // Rounded corners
                   ),
                   child: SizedBox(
@@ -150,8 +157,10 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                         borderData: FlBorderData(
                           show: true, // Enables a grid border
                           border: const Border.symmetric(
-                            horizontal:
-                                BorderSide(color: Colors.grey, width: 1),
+                            horizontal: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
                           ),
                         ),
                         gridData: FlGridData(show: true),
@@ -165,8 +174,10 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
                 // Display Summary
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -198,7 +209,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       final product = productData[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.green,
@@ -223,8 +236,11 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     );
   }
 
-  Widget _buildSummaryCard(
-      {required String label, required String value, required Color color}) {
+  Widget _buildSummaryCard({
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
