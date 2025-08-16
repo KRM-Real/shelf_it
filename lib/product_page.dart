@@ -328,96 +328,202 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE6F2F0),
-      appBar: AppBar(
-        title: const Text('Products', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF213A57),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, '/dashboard'),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.qr_code_scanner_rounded,
-              size: 32,
-              color: Colors.white,
-            ),
-            onPressed: _scanQrCode,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFF0F2F5), // Soft light gray
+              const Color(0xFFE8F4FD), // Muted light blue
+              const Color(0xFFECEFF1), // Warm light gray
+            ],
+            stops: const [0.0, 0.5, 1.0],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value.trim();
-                });
-              },
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: 'Search products...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Modern Header Card
+              Container(
+                margin: const EdgeInsets.all(16),
+                child: Card(
+                  elevation: 4,
+                  shadowColor: Theme.of(
+                    context,
+                  ).colorScheme.shadow.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => Navigator.pushReplacementNamed(
+                            context,
+                            '/dashboard',
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Products',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                                Text(
+                                  'Manage Inventory',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: _scanQrCode,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.qr_code_scanner_rounded,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: _userMode == null
-                ? const Center(child: CircularProgressIndicator())
-                : StreamBuilder(
-                    stream: _getProductsStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
+              // Search Bar
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.trim();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        hintText: 'Search products...',
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: _userMode == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : StreamBuilder(
+                        stream: _getProductsStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
 
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          }
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                          child: Text('No products available.'),
-                        );
-                      }
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
+                            return const Center(
+                              child: Text('No products available.'),
+                            );
+                          }
 
-                      var products = snapshot.data!.docs;
+                          var products = snapshot.data!.docs;
 
-                      return ListView.builder(
-                        itemCount: products.length,
-                        itemBuilder: (context, index) {
-                          var product = products[index];
-                          return GestureDetector(
-                            onTap: () => _showProductDialog(context, product),
-                            child: ProductTile(
-                              name: product['name'] ?? 'No Name',
-                              description:
-                                  product['description'] ?? 'No Description',
-                              imageUrl:
-                                  product['imageUrl'] ??
-                                  'https://via.placeholder.com/150',
-                              price: product['price'].toString(),
-                              quantity: product['quantity'].toString(),
-                            ),
+                          return ListView.builder(
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              var product = products[index];
+                              return GestureDetector(
+                                onTap: () =>
+                                    _showProductDialog(context, product),
+                                child: ProductTile(
+                                  name: product['name'] ?? 'No Name',
+                                  description:
+                                      product['description'] ??
+                                      'No Description',
+                                  imageUrl:
+                                      product['imageUrl'] ??
+                                      'https://via.placeholder.com/150',
+                                  price: product['price'].toString(),
+                                  quantity: product['quantity'].toString(),
+                                ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF0B6477),
-        selectedItemColor: const Color(0xFF45DFB1),
-        unselectedItemColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [

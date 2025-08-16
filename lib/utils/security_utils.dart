@@ -2,8 +2,9 @@
 class SecurityUtils {
   // Email validation with comprehensive regex
   static bool isValidEmail(String email) {
-    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-        .hasMatch(email);
+    return RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(email);
   }
 
   // Password strength validation
@@ -23,7 +24,10 @@ class SecurityUtils {
   // Sanitize input to prevent injection attacks
   static String sanitizeInput(String input) {
     return input
-        .replaceAll(RegExp(r'[<>"' + "']"), '') // Remove HTML/SQL injection chars
+        .replaceAll(
+          RegExp(r'[<>"' + "']"),
+          '',
+        ) // Remove HTML/SQL injection chars
         .trim(); // Remove leading/trailing whitespace
   }
 
@@ -118,21 +122,25 @@ class SecurityUtils {
   static final Map<String, DateTime> _lastCallTimes = {};
   static final Map<String, int> _callCounts = {};
 
-  static bool isRateLimited(String action, {int maxCalls = 10, Duration window = const Duration(minutes: 1)}) {
+  static bool isRateLimited(
+    String action, {
+    int maxCalls = 10,
+    Duration window = const Duration(minutes: 1),
+  }) {
     final now = DateTime.now();
     final lastCall = _lastCallTimes[action];
-    
+
     if (lastCall == null || now.difference(lastCall) > window) {
       _lastCallTimes[action] = now;
       _callCounts[action] = 1;
       return false;
     }
-    
+
     final currentCount = _callCounts[action] ?? 0;
     if (currentCount >= maxCalls) {
       return true;
     }
-    
+
     _callCounts[action] = currentCount + 1;
     return false;
   }
@@ -154,7 +162,7 @@ class SecurityUtils {
 class ErrorHandler {
   static String getUserFriendlyMessage(dynamic error) {
     final errorStr = error.toString().toLowerCase();
-    
+
     if (errorStr.contains('network') || errorStr.contains('connection')) {
       return 'Network connection error. Please check your internet connection.';
     } else if (errorStr.contains('permission')) {
@@ -170,7 +178,11 @@ class ErrorHandler {
     }
   }
 
-  static void logError(String context, dynamic error, [StackTrace? stackTrace]) {
+  static void logError(
+    String context,
+    dynamic error, [
+    StackTrace? stackTrace,
+  ]) {
     // In production, this would log to a proper logging service
     // For now, using debug output
     // print('ERROR in $context: $error');

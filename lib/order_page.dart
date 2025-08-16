@@ -364,179 +364,268 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE6F2F0),
-      appBar: AppBar(
-        title: Text('Order Page', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF213A57),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, '/dashboard'),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.history, color: Colors.white),
-            onPressed: _showTransactionHistory,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFF0F2F5), // Soft light gray
+              const Color(0xFFE8F4FD), // Muted light blue
+              const Color(0xFFECEFF1), // Warm light gray
+            ],
+            stops: const [0.0, 0.5, 1.0],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        // Makes content scrollable
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        ),
+        child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(height: 30),
-              Text(
-                'Order Details',
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 30),
-              DropdownSearch<String>(
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-                  searchFieldProps: TextFieldProps(
-                    decoration: InputDecoration(
-                      labelText: 'Search Product',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                    ),
+              // Modern Header Card
+              Container(
+                margin: const EdgeInsets.all(16),
+                child: Card(
+                  elevation: 4,
+                  shadowColor: Theme.of(
+                    context,
+                  ).colorScheme.shadow.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: 'Product Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                  ),
-                ),
-                asyncItems: (String filter) async {
-                  // Fetch product names from Firestore
-                  QuerySnapshot snapshot;
-                  if (_userMode == 'organization') {
-                    snapshot = await _firestore
-                        .collection('Product')
-                        .where('company_name', isEqualTo: _companyName)
-                        .get();
-                  } else {
-                    snapshot = await _firestore
-                        .collection('Product')
-                        .where('userId', isEqualTo: _userId)
-                        .get();
-                  }
-                  return snapshot.docs
-                      .map((doc) => doc['name'] as String)
-                      .where(
-                        (name) =>
-                            name.toLowerCase().contains(filter.toLowerCase()),
-                      )
-                      .toList();
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _productNameController.text = value!;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-              // Quantity and Action in one Row
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      controller: _quantityController,
-                      decoration: InputDecoration(
-                        labelText: 'Quantity',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _action,
-                      items: ['Restock', 'Sold']
-                          .map(
-                            (action) => DropdownMenuItem<String>(
-                              value: action,
-                              child: Text(action),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => Navigator.pushReplacementNamed(
+                            context,
+                            '/dashboard',
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _action = value!;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Action',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide(color: Colors.grey),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                      ),
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Orders',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                                Text(
+                                  'Manage Transactions',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: _showTransactionHistory,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.history,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: _noteController,
-                decoration: InputDecoration(
-                  labelText: 'Note',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[100],
                 ),
-                maxLines: 3,
               ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _placeOrder,
-                  child: Text(
-                    'Done',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00b140),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Order Details',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              labelText: 'Search Product',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[100],
+                            ),
+                          ),
+                        ),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: 'Product Name',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                          ),
+                        ),
+                        asyncItems: (String filter) async {
+                          // Fetch product names from Firestore
+                          QuerySnapshot snapshot;
+                          if (_userMode == 'organization') {
+                            snapshot = await _firestore
+                                .collection('Product')
+                                .where('company_name', isEqualTo: _companyName)
+                                .get();
+                          } else {
+                            snapshot = await _firestore
+                                .collection('Product')
+                                .where('userId', isEqualTo: _userId)
+                                .get();
+                          }
+                          return snapshot.docs
+                              .map((doc) => doc['name'] as String)
+                              .where(
+                                (name) => name.toLowerCase().contains(
+                                  filter.toLowerCase(),
+                                ),
+                              )
+                              .toList();
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _productNameController.text = value!;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      // Quantity and Action in one Row
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: TextField(
+                              controller: _quantityController,
+                              decoration: InputDecoration(
+                                labelText: 'Quantity',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            flex: 3,
+                            child: DropdownButtonFormField<String>(
+                              initialValue: _action,
+                              items: ['Restock', 'Sold']
+                                  .map(
+                                    (action) => DropdownMenuItem<String>(
+                                      value: action,
+                                      child: Text(action),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _action = value!;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Action',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[100],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        controller: _noteController,
+                        decoration: InputDecoration(
+                          labelText: 'Note',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: 40),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _placeOrder,
+                          child: Text(
+                            'Done',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00b140),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -545,9 +634,9 @@ class _OrderPageState extends State<OrderPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF0B6477),
-        selectedItemColor: const Color(0xFF45DFB1),
-        unselectedItemColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [

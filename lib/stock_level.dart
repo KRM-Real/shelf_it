@@ -129,90 +129,206 @@ class _StockLevelPageState extends State<StockLevelPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Stock Levels', style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF213A57), // Dark teal from the color scheme
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, '/dashboard'),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.white),
-            onPressed: _showSortOptions,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFF0F2F5), // Soft light gray
+              const Color(0xFFE8F4FD), // Muted light blue
+              const Color(0xFFECEFF1), // Warm light gray
+            ],
+            stops: const [0.0, 0.5, 1.0],
           ),
-        ],
-      ),
-      body: _userMode == null
-          ? const Center(child: CircularProgressIndicator())
-          : Container(
-              color: Color(0xFFE6F2F0), // A soft, light teal for background
-              child: StreamBuilder(
-                stream: _getFilteredStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    if (snapshot.error.toString().contains(
-                      'failed-precondition',
-                    )) {
-                      return Center(
-                        child: Text(
-                          'Query requires a Firestore index. Please set up the index in Firebase Console.',
-                          style: TextStyle(color: Colors.red),
-                          textAlign: TextAlign.center,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Modern Header Card
+              Container(
+                margin: const EdgeInsets.all(16),
+                child: Card(
+                  elevation: 4,
+                  shadowColor: Theme.of(
+                    context,
+                  ).colorScheme.shadow.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () => Navigator.pushReplacementNamed(
+                            context,
+                            '/dashboard',
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                         ),
-                      );
-                    }
-                    return Center(
-                      child: Text('An error occurred: ${snapshot.error}'),
-                    );
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(child: Text('No products available.'));
-                  }
-
-                  var products = snapshot.data!.docs;
-
-                  return ListView.builder(
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      var product = products[index];
-                      var data = product.data() as Map<String, dynamic>?;
-
-                      String name = data != null && data.containsKey('name')
-                          ? data['name']
-                          : 'No Name';
-                      int quantity =
-                          data != null && data.containsKey('quantity')
-                          ? int.tryParse(data['quantity'].toString()) ?? 0
-                          : 0;
-                      int? threshold =
-                          data != null && data.containsKey('threshold')
-                          ? int.tryParse(data['threshold'].toString())
-                          : null;
-
-                      return StockLevelTile(
-                        name: name,
-                        quantity: quantity,
-                        threshold: threshold,
-                        onSetThreshold: (newThreshold) {
-                          product.reference.update({'threshold': newThreshold});
-                        },
-                      );
-                    },
-                  );
-                },
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Stock Levels',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                                Text(
+                                  'Inventory Monitoring',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: _showSortOptions,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.filter_list,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+              // Content Area
+              Expanded(
+                child: _userMode == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        child: StreamBuilder(
+                          stream: _getFilteredStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+
+                            if (snapshot.hasError) {
+                              if (snapshot.error.toString().contains(
+                                'failed-precondition',
+                              )) {
+                                return Center(
+                                  child: Text(
+                                    'Query requires a Firestore index. Please set up the index in Firebase Console.',
+                                    style: TextStyle(color: Colors.red),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              }
+                              return Center(
+                                child: Text(
+                                  'An error occurred: ${snapshot.error}',
+                                ),
+                              );
+                            }
+
+                            if (!snapshot.hasData ||
+                                snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  'No products available.',
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            var products = snapshot.data!.docs;
+
+                            return ListView.builder(
+                              itemCount: products.length,
+                              itemBuilder: (context, index) {
+                                var product = products[index];
+                                var data =
+                                    product.data() as Map<String, dynamic>?;
+
+                                String name =
+                                    data != null && data.containsKey('name')
+                                    ? data['name']
+                                    : 'No Name';
+                                int quantity =
+                                    data != null && data.containsKey('quantity')
+                                    ? int.tryParse(
+                                            data['quantity'].toString(),
+                                          ) ??
+                                          0
+                                    : 0;
+                                int? threshold =
+                                    data != null &&
+                                        data.containsKey('threshold')
+                                    ? int.tryParse(data['threshold'].toString())
+                                    : null;
+
+                                return StockLevelTile(
+                                  name: name,
+                                  quantity: quantity,
+                                  threshold: threshold,
+                                  onSetThreshold: (newThreshold) {
+                                    product.reference.update({
+                                      'threshold': newThreshold,
+                                    });
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF0B6477),
-        selectedItemColor: const Color(0xFF45DFB1),
-        unselectedItemColor: Colors.black,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
@@ -248,90 +364,104 @@ class StockLevelTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isLowStock = quantity <= (threshold ?? 0);
+
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1), // Shadow color
-            spreadRadius: 2, // Spread of the shadow
-            blurRadius: 5, // Blur intensity
-            offset: const Offset(0, 3), // Offset of the shadow
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              quantity <= (threshold ?? 0)
-                  ? Icons.warning_amber_rounded
-                  : Icons.check_circle_outline,
-              color: quantity <= (threshold ?? 0) ? Colors.red : Colors.green,
-              size: 40.0,
-            ),
-            const SizedBox(width: 15.0),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                      color: Color(0xFF0B6477),
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    'Stock Level: $quantity',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Threshold: ${threshold ?? 'Not Set'}',
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      int? newThreshold = await showDialog<int>(
-                        context: context,
-                        builder: (context) =>
-                            ThresholdDialog(currentThreshold: threshold),
-                      );
-                      if (newThreshold != null) {
-                        try {
-                          // Record the threshold to the database
-                          onSetThreshold(newThreshold);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Threshold updated to $newThreshold',
-                              ),
-                            ),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error updating threshold: $e'),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    child: const Text('Set Threshold'),
-                  ),
-                ],
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Card(
+        elevation: 2,
+        shadowColor: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isLowStock
+                      ? const Color(0xFFFFEBEE) // Light red background
+                      : const Color(0xFFE8F5E8), // Light green background
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  isLowStock
+                      ? Icons.warning_amber_rounded
+                      : Icons.check_circle_outline,
+                  color: isLowStock
+                      ? const Color(0xFFE57373) // Muted red
+                      : const Color(0xFF66BB6A), // Muted green
+                  size: 24.0,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      'Stock Level: $quantity',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Threshold: ${threshold ?? 'Not Set'}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    TextButton(
+                      onPressed: () async {
+                        int? newThreshold = await showDialog<int>(
+                          context: context,
+                          builder: (context) =>
+                              ThresholdDialog(currentThreshold: threshold),
+                        );
+                        if (newThreshold != null) {
+                          try {
+                            // Record the threshold to the database
+                            onSetThreshold(newThreshold);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Threshold updated to $newThreshold',
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error updating threshold: $e'),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      child: Text(
+                        'Set Threshold',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

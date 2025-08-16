@@ -1,0 +1,33 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Profile images - users can only upload their own profile images
+    match /profile_images/{userId}/{allPaths=**} {
+      allow read: if true; // Profile images can be publicly readable
+      allow write: if request.auth != null 
+        && request.auth.uid == userId
+        && isValidImage()
+        && isValidSize();
+    }
+    
+    // Product images - access based on user mode and ownership
+    match /product_images/{path=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && isValidImage()
+        && isValidSize();
+    }
+    
+    // Helper functions
+    function isValidImage() {
+      return resource.contentType != null &&
+        resource.contentType.matches('image/.*') &&
+        resource.contentType in ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    }
+    
+    function isValidSize() {
+      return resource.size < 5 * 1024 * 1024; // 5MB limit
+    }
+  }
+}

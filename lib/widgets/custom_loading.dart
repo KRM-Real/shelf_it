@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 /// Custom loading widgets for consistent UX across the app
 class CustomLoading {
   /// Shimmer loading effect for cards
-  static Widget shimmerCard({double height = 100, double width = double.infinity}) {
+  static Widget shimmerCard({
+    double height = 100,
+    double width = double.infinity,
+  }) {
     return Container(
       height: height,
       width: width,
@@ -11,9 +14,7 @@ class CustomLoading {
         borderRadius: BorderRadius.circular(12),
         color: Colors.grey[300],
       ),
-      child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
-      ),
+      child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
     );
   }
 
@@ -30,10 +31,7 @@ class CustomLoading {
               children: [
                 const CircularProgressIndicator(),
                 const SizedBox(height: 16),
-                Text(
-                  message,
-                  style: const TextStyle(fontSize: 16),
-                ),
+                Text(message, style: const TextStyle(fontSize: 16)),
               ],
             ),
           ),
@@ -49,15 +47,23 @@ class CustomLoading {
       height: 20,
       child: CircularProgressIndicator(
         strokeWidth: 2,
-        valueColor: AlignmentTween(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).animate(
-          CurvedAnimation(
-            parent: AlwaysStoppedAnimation(1.0),
-            curve: Curves.linear,
-          ),
-        ).drive(ColorTween(begin: color ?? Colors.white, end: color ?? Colors.white)),
+        valueColor:
+            AlignmentTween(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+                .animate(
+                  CurvedAnimation(
+                    parent: AlwaysStoppedAnimation(1.0),
+                    curve: Curves.linear,
+                  ),
+                )
+                .drive(
+                  ColorTween(
+                    begin: color ?? Colors.white,
+                    end: color ?? Colors.white,
+                  ),
+                ),
       ),
     );
   }
@@ -75,16 +81,8 @@ class CustomLoading {
           width: double.infinity,
           color: Colors.grey[300],
         ),
-        subtitle: Container(
-          height: 12,
-          width: 150,
-          color: Colors.grey[300],
-        ),
-        trailing: Container(
-          height: 20,
-          width: 60,
-          color: Colors.grey[300],
-        ),
+        subtitle: Container(height: 12, width: 150, color: Colors.grey[300]),
+        trailing: Container(height: 20, width: 60, color: Colors.grey[300]),
       ),
     );
   }
@@ -112,11 +110,7 @@ class CustomErrorWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 48,
-                color: Theme.of(context).colorScheme.error,
-              ),
+              Icon(icon, size: 48, color: Theme.of(context).colorScheme.error),
               const SizedBox(height: 16),
               Text(
                 message,
